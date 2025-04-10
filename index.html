@@ -1,0 +1,50 @@
+<div id="app">
+  <div class="container">
+    <!-- SVG for Lines -->
+    <svg class="connections">
+      <line v-for="(line, index) in lines" :key="index"
+            :x1="line.x1" :y1="line.y1"
+            :x2="line.x2" :y2="line.y2"
+            stroke="white" stroke-width="2" stroke-opacity="0.7"/>
+    </svg>
+
+    <!-- Nodes -->
+    <div v-for="(node, index) in nodes" :key="index"
+         class="node"
+         :style="{
+           left: node.x + 'px',
+           top: node.y + 'px',
+           backgroundColor: node.color
+         }"
+         @mouseover="hoveredNode = index"
+         @mouseleave="hoveredNode = null"
+         @mousedown="startDrag(index, $event)">
+      {{ node.label }}
+    </div>
+
+    <!-- Hovering Messages -->
+    <div v-if="hoveredNode !== null"
+         class="hover-message"
+         :style="{
+           left: nodes[hoveredNode].x + 50 + 'px',
+           top: nodes[hoveredNode].y + 'px'
+         }">
+      {{ nodes[hoveredNode].concept }}
+    </div>
+
+    <!-- Emergent Concepts -->
+    <transition-group name="fade">
+      <div v-for="(message, index) in messages" :key="message.id"
+           class="message"
+           :class="{ highlight: message.isNew }"
+           :style="{ 
+             left: message.x + 'px', 
+             top: message.y + 'px',
+             opacity: message.opacity,
+             boxShadow: message.isNew ? '0 0 50px yellow' : '0 0 20px yellow'
+           }">
+        {{ message.text }}
+      </div>
+    </transition-group>
+  </div>
+</div>
